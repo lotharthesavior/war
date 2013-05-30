@@ -2,6 +2,7 @@
 $(document).ready(function(){
 	
 	// variaveis
+		
 
 	$('#tabuleiro').html( estrutura );
 
