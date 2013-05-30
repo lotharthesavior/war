@@ -1,12 +1,36 @@
 
 $(document).ready(function(){
+
+	var nome = 'tabuleiro1';
+
+	//
+		var contador = 1;
 	
 	// variaveis
+		// linhas
+		var linhas = 10;
+		var linha = $('<div class="linha_'+nome+'" style="float:left;"></div>');
+		// colunas
+		var colunas = 10;
+		var coluna = '';
 
-	$('#tabuleiro').html( estrutura );
+	// montagem
+	for( var i = 1; i < linhas; i++ ){  // aplica linhas
 
-	$.each( linhas, function( index, value ){
-		$('#tabuleiro').append( value );
+		var linha_atual = linha;
+		$(linha_atual).attr('id','linha_'+i+'_'+nome);
+		$('#tabuleiro').append( linha_atual );
+
+	};
+
+	$.each( $('.linha_'+nome),function( index, value ){ // aplica colunas
+
+		//TODO: outro loop aqui dentro para as colunas de cada linha
+		var coluna_atual = coluna;
+		$(coluna_atual).attr('id','coluna_'+contador+'_'+nome);
+		$( '#linha'+contador+'_'+nome ).append( coluna_atual );
+		contador++;
+		
 	});
 
 });
