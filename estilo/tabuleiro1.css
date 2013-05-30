@@ -1,0 +1,28 @@
+
+#tabuleiro{
+	width:700px;
+	height:500px;
+	margin:0 auto;
+	border:1px solid #000;
+	overflow: none;
+}
+
+.coluna_tabuleiro1{
+	float:left;
+	width:68px;
+	height:48px;
+	margin:0px;
+	padding:0px;
+}
+
+.coluna_tabuleiro1:hover{
+	border:1px solid red;
+}
+
+.celula_selecionada{
+	border:1px solid red;
+}
+
+.celula_desselecionada{
+	border:1px solid #000;
+}

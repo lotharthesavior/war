@@ -1,16 +1,14 @@
-function TabuleiroView(tabuleiro){
+
+function TabuleiroView( tabuleiro ){
+
+	this.tabuleiro = tabuleiro;
 
 }
 
 TabuleiroView.prototype.render = function() {
 	//faz o que devia ser feito
-};
 
-
-$(document).ready(function(){
-	
 	// variaveis
-
 	var nome = 'tabuleiro1';
 
 	//
@@ -44,6 +42,6 @@ $(document).ready(function(){
 	$( '#linha'+contador+'_'+nome ).append( coluna_atual );
 	contador++;
 
-});
+};
 
 		
