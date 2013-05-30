@@ -11,6 +11,12 @@ function TabuleiroView( tabuleiro ){
 	this.celulaSelecionada 	= false;
 }
 
+/**
+* Renderiza o tabuleiro no container informado
+*
+* @method render
+* @param {String} container Seletor do container onde deve ser renderizado o tabuleiro
+*/
 TabuleiroView.prototype.render = function(container) {
 	
 	// variaveis
@@ -54,6 +60,11 @@ TabuleiroView.prototype.render = function(container) {
 	this.aplicaEventos();
 };
 
+/**
+* Aplica os eventos necessários
+*
+* @method aplicaEventos
+*/
 TabuleiroView.prototype.aplicaEventos = function() {
 
 	var that = this;
@@ -66,10 +77,20 @@ TabuleiroView.prototype.aplicaEventos = function() {
 	});
 };
 
+/**
+* Desmarca a célula selecionada*
+* 
+* @method desselecionaCelula
+*/
 TabuleiroView.prototype.desselecionaCelula = function() {
 	$( this.celulaSelecionada ).removeClass('celula_selecionada');// remove class
 	$( this.celulaSelecionada ).addClass('celula_desselecionada');// remove class
 	this.celulaSelecionada = false;
 };
 
+/**
+* Aplica o css aos elementos próximos ( fazem fronteira )
+* 
+* @method aplicaEstiloParaCelulasAtacaveis
+*/
 TabuleiroView.prototype.aplicaEstiloParaCelulasAtacaveis = function() {};	
