@@ -1,12 +1,8 @@
+function TabuleiroView(tabuleiro){
 
-$(document).ready(function(){
-	
-	// variaveis
+}
 
-	$('#tabuleiro').html( estrutura );
-
-	$.each( linhas, function( index, value ){
-		$('#tabuleiro').append( value );
-	});
-
-});
+TabuleiroView.prototype.render = function() {
+//faz o que vc fazia antes
+//pega os territórios e vai criando as div's	
+};
