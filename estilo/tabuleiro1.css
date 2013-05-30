@@ -1,28 +1,37 @@
 
 #tabuleiro{
-	width:700px;
-	height:500px;
-	margin:0 auto;
-	border:1px solid #000;
+	width: 700px;
+	height: 500px;
+	margin: 0 auto;
+	border: 1px solid #000;
 	overflow: none;
 }
 
-.coluna_tabuleiro1{
-	float:left;
-	width:68px;
-	height:48px;
-	margin:0px;
-	padding:0px;
+.linha {
+	clear: both;
+	width: 700px;
+	height: 50px;
+	margin: 0px;
+	padding: 0px;
+	background:	green;
 }
 
-.coluna_tabuleiro1:hover{
-	border:1px solid red;
+.coluna{
+	float: left;
+	width: 68px;
+	height: 48px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.coluna:hover{
+	border: 1px solid red;
 }
 
 .celula_selecionada{
-	border:1px solid red;
+	border: 1px solid red;
 }
 
 .celula_desselecionada{
-	border:1px solid #000;
+	border: 1px solid #000;
 }

@@ -8,9 +8,22 @@
 			"lib/jquery-1.8.0.min.js",
 			"lib/underscore.js",
 			"lib/backbone-min.js",
-			// "src/tabuleiro/tabuleiro1.js",
-			"teste_funcional/tabuleiro.js" // para averiguar a funcionalidade 
+			"src/model/tabuleiro.js",
+			"src/tabuleiro/tabuleiro_view.js"
 			);
+
+
+		head.ready(function(){
+			var imperioRomano = new Tabuleiro('ImperioRomano', {
+					linha : 10, 
+					coluna: 10
+				}),
+
+				imperioRomanoTabuleiroView 	= new TabuleiroView(imperioRomano);
+
+			imperioRomanoTabuleiroView.render('#imperio-romano');
+		});
+
 	</script>
 	
 	<link rel='StyleSheet' href="estilo/tabuleiro1.css" type="text/css" media='screen' />
@@ -18,9 +31,6 @@
 </head>
 <body>
 
-	<div id='tabuleiro'>
-		<!-- aqui vai o tabuleiro -->
-	</div>
-
+	<div id='imperio-romano' style="float:left"></div>
 </body>
 </html>
