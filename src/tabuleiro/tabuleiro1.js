@@ -1,3 +1,11 @@
+function TabuleiroView(tabuleiro){
+
+}
+
+TabuleiroView.prototype.render = function() {
+	//faz o que devia ser feito
+};
+
 
 $(document).ready(function(){
 	
