@@ -7,7 +7,7 @@
 	overflow: none;
 }
 
-.linha {
+.linha_tabuleiro1 {
 	clear: both;
 	width: 700px;
 	height: 50px;
@@ -16,7 +16,7 @@
 	background:	green;
 }
 
-.coluna{
+.coluna_tabuleiro1{
 	float: left;
 	width: 68px;
 	height: 48px;
@@ -24,7 +24,7 @@
 	padding: 0px;
 }
 
-.coluna:hover{
+.coluna_tabuleiro1:hover{
 	border: 1px solid red;
 }
 
@@ -34,4 +34,8 @@
 
 .celula_desselecionada{
 	border: 1px solid #000;
+}
+
+.atacavel{
+	border:1px solid yellow;
 }
