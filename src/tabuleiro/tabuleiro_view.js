@@ -6,10 +6,21 @@
   * @constructor
   * @param {Function} tabuleiro Tabuleiro que deve ser renderizado
   */
-function TabuleiroView( tabuleiro ){
+function TabuleiroView( tabuleiro, socket ){
 	this.tabuleiro 			= tabuleiro;
 	this.celulaSelecionada 	= false;
+	this.socket 		 	= socket;
+
+	this.aplicaEventoSocket();
 }
+
+TabuleiroView.prototype.aplicaEventoSocket = function() {
+	var that = this;
+
+	this.socket.on('celula-selecionada', function(posicao){
+		that.selecionaCelula( $( '#'+ posicao.linha +'_'+ posicao.coluna ) );
+	});
+};
 
 /**
 * Renderiza o tabuleiro no container informado
@@ -48,7 +59,7 @@ TabuleiroView.prototype.render = function(container) {
 
 		for( i = 1; i <= colunasTabuleiro; i++ ){
 			coluna_atual = coluna.clone();
-			coluna_atual.attr('id','coluna_'+i+'_linha'+contador+'_'+nomeTabuleiro);
+			coluna_atual.attr('id', contador +'_'+ i );
 			value.append( coluna_atual );
 		}
 
@@ -68,13 +79,27 @@ TabuleiroView.prototype.render = function(container) {
 TabuleiroView.prototype.aplicaEventos = function() {
 
 	var that = this;
-	$( '.coluna' ).click(function(){			
-		that.desselecionaCelula();
+	$( '.coluna' ).click(function(){
+
+		var dadosLinhaColuna = $(this).attr('id').split('_');		
+
 		that.aplicaEstiloParaCelulasAtacaveis();
-		that.celulaSelecionada = this;
-		$( that.celulaSelecionada ).removeClass('celula_desselecionada');// remove class
-		$( that.celulaSelecionada ).addClass('celula_selecionada'); // add class
+		that.selecionaCelula(this);
+		
+		that.socket.emit('celula-selecionada', { linha : dadosLinhaColuna[0], coluna : dadosLinhaColuna[1] });
 	});
+};
+
+/**
+* Seleciona uma célula
+* 
+* @method selecionaCelula
+*/
+TabuleiroView.prototype.selecionaCelula = function( celula ) {
+	this.desselecionaCelula();
+	$( celula ).addClass('celula_selecionada');// remove class
+	$( celula ).removeClass('celula_desselecionada');// remove class
+	this.celulaSelecionada = celula;
 };
 
 /**
