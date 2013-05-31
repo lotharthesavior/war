@@ -1,8 +1,13 @@
-war
+War
 ===
+Implementação do jogo clássico [War](http://pt.wikipedia.org/wiki/War)
 
-our version of war game in JS
+Projeto feito todo em javascript sendo o server side em [Node.JS](http://nodejs.org/)
+É necessário que tenha instalado o [Node.JS](http://nodejs.org/)
 
-Implementado com Node.JS
+Para instalação do projeto execute os seguintes passos:
 
-Para instalação basta executar o npm install socket.io
+ - git clone https://github.com/lotharthesavior/war.git
+ - cd war
+ - npm install
+ - npm start
