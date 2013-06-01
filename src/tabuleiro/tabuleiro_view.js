@@ -6,15 +6,17 @@
   * @constructor
   * @param {Function} tabuleiro Tabuleiro que deve ser renderizado
   */
-function TabuleiroView( tabuleiro, socket ){
-	this.tabuleiro 			= tabuleiro;
-	this.celulaSelecionada 	= false;
-	this.socket 		 	= socket;
-
-	this.aplicaEventoSocket();
+function TabuleiroView() {
+	this.celulaSelecionada = false;	
 }
 
-TabuleiroView.prototype.aplicaEventoSocket = function() {
+TabuleiroView.prototype.setTabuleiro = function(tabuleiro) 
+{
+	this.tabuleiro 			= tabuleiro;
+};
+
+TabuleiroView.prototype.aplicaEventoSocket = function() 
+{
 	var that = this;
 
 	this.socket.on('celula-selecionada', function(posicao){
@@ -30,11 +32,39 @@ TabuleiroView.prototype.aplicaEventoSocket = function() {
 */
 TabuleiroView.prototype.render = function(container) {
 	
+	
+	var grade = this.criarGrade();
+
+	this.adicionaTerritoriosNaGrade(grade);
+
+	$(container).html( grade );	
+	this.aplicaEventos();
+};
+
+TabuleiroView.prototype.adicionaTerritoriosNaGrade = function(grade) {
+	
+	var territorios = this.tabuleiro.getTerritorios(), 
+		qtdCelulasTerritorio = 0, 
+		ctCelulaTerritorio	 = 0,
+		posicao				 = [];
+
+	for( nomeTerritorio in territorios ) {
+		qtdCelulasTerritorio = territorios[nomeTerritorio].length;
+
+		for( ctCelulaTerritorio = 0; ctCelulaTerritorio < qtdCelulasTerritorio; ctCelulaTerritorio++ ) {
+			posicao = territorios[nomeTerritorio][ctCelulaTerritorio];		
+			$( grade ).find('#'+ posicao[0] +'_'+ posicao[1]).addClass('terra');
+		}
+	}
+};
+
+TabuleiroView.prototype.criarGrade = function() {
+
 	// variaveis
 	var nomeTabuleiro 		= this.tabuleiro.getNome(),
 		linhasTabuleiro 	= this.tabuleiro.getTamanho().linha,
 		colunasTabuleiro 	= this.tabuleiro.getTamanho().coluna,
-		grade 				= []
+		grade 				= $('<div />'),
 
 		// utilitarios
 		contador 	 = 1,
@@ -42,33 +72,38 @@ TabuleiroView.prototype.render = function(container) {
 		linha_atual	 = '',
 
 		// linhasTabuleiro
-		linha = $('<div class="linha"></div>'),
+		linha = $('<div class="linha" />'),
 
 		// colunasTabuleiro
-		coluna = $('<div class="coluna celula_desselecionada"></div>');
+		coluna = $('<div class="coluna celula_desselecionada" />');
 
 	// montagem
 	for( var i = 1; i <= linhasTabuleiro; i++ ){  // aplica linhasTabuleiro
 		linha_atual = linha.clone();
 		linha_atual.attr('id','linha_'+i+'_'+nomeTabuleiro);
-		grade.push( linha_atual );
+		grade.append( linha_atual );
 	};
 
 	// aplica colunasTabuleiro
-	$.each( grade, function( index, value ){ 
+	$.each( grade.find('div.linha'), function( index, value ){ 
 
 		for( i = 1; i <= colunasTabuleiro; i++ ){
 			coluna_atual = coluna.clone();
 			coluna_atual.attr('id', contador +'_'+ i );
-			value.append( coluna_atual );
+			coluna_atual.data({
+				tipo: 'agua',
+				coluna: i,
+				linha: contador
+
+			});
+			$(value).append( coluna_atual );
 		}
 
 		contador++;
 
 	});
 
-	$(container).html( grade );
-	this.aplicaEventos();
+	return grade;
 };
 
 /**
@@ -86,7 +121,7 @@ TabuleiroView.prototype.aplicaEventos = function() {
 		that.aplicaEstiloParaCelulasAtacaveis();
 		that.selecionaCelula(this);
 		
-		that.socket.emit('celula-selecionada', { linha : dadosLinhaColuna[0], coluna : dadosLinhaColuna[1] });
+		//that.socket.emit('celula-selecionada', { linha : dadosLinhaColuna[0], coluna : dadosLinhaColuna[1] });
 	});
 };
 

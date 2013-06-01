@@ -9,21 +9,25 @@
 			"lib/underscore.js",
 			"lib/backbone-min.js",
 			"src/model/tabuleiro.js",
-			"src/tabuleiro/tabuleiro_view.js",	
-			"http://localhost:8080/socket.io/socket.io.js"
+			"src/tabuleiro/tabuleiro_view.js"
 			);
 
 
 		head.ready(function(){
 
-			var socket 			= io.connect('http://localhost:8080'),
-				imperioRomano 	= new Tabuleiro('ImperioRomano', {
+			var mapaMundi 	= new Tabuleiro('MapaMundi', {
 					linha : 10, 
 					coluna: 10
 				}),
-				imperioRomanoTabuleiroView 	= new TabuleiroView(imperioRomano, socket);
+				mapaMundiTabuleiroView 	= new TabuleiroView();
 
-			imperioRomanoTabuleiroView.render('#imperio-romano');		 
+
+			mapaMundi.adicionarTerritorio('europa', [ [1,9], [1,10], [2, 10] ] );
+
+			mapaMundi.adicionarTerritorio('brasil', [ [5,4], [5,5], [5, 6], [6,4], [6,5], [6, 6] ] );
+
+			mapaMundiTabuleiroView.setTabuleiro(mapaMundi);
+			mapaMundiTabuleiroView.render('#mapa-mundi');		 
 		});
 	</script>
 	
@@ -32,7 +36,7 @@
 </head>
 <body>
 
-	<div id='imperio-romano' style="float:left"></div>
+	<div id='mapa-mundi'></div>
 
 </body>
 </html>

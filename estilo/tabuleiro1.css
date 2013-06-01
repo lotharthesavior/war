@@ -7,16 +7,20 @@
 	overflow: none;
 }
 
-.linha_tabuleiro1 {
+.linha {
 	clear: both;
 	width: 700px;
 	height: 50px;
 	margin: 0px;
 	padding: 0px;
+	background:	blue;
+}
+
+.terra {
 	background:	green;
 }
 
-.coluna_tabuleiro1{
+.coluna{
 	float: left;
 	width: 68px;
 	height: 48px;
@@ -24,7 +28,7 @@
 	padding: 0px;
 }
 
-.coluna_tabuleiro1:hover{
+.coluna:hover{
 	border: 1px solid red;
 }
 
