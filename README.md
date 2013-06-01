@@ -11,3 +11,5 @@ Para instalação do projeto execute os seguintes passos:
  - cd war
  - npm install
  - npm start
+
+teste
