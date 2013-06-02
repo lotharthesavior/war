@@ -1,5 +1,6 @@
 
 var Tabuleiro1 = {};
+var Peca1 = $('<img src=\'img/soldado1.jpg\' class=\'peca imagem_peca\' />');
 
 head.ready( function(){
 	
@@ -12,6 +13,7 @@ head.ready( function(){
 	var contador = 1;
 	var coluna_atual;
 	var linha_atual;
+	var pecaAtual;
 
 	// variaveis
 	// linhas
@@ -41,7 +43,15 @@ head.ready( function(){
 
 			$(coluna_atual)
 				.attr({
+<<<<<<< HEAD
+					id: 'coluna_'+i+'_linha_'+contador+'_'+Tabuleiro1.nome,
+					tipo: 'terra',
+					coluna: i,
+					linha: contador,
+					coordenadas: String(contador)+','+String(i)
+=======
 					id: 'coluna_'+i+'_linha_'+contador+'_'+Tabuleiro1.nome
+>>>>>>> 78a3812c1e2548aaed55d10961cba978b65afe59
 				});
 
 			$(coluna_atual).data({
@@ -67,24 +77,60 @@ head.ready( function(){
 		// seleção
 		$('.coluna_'+Tabuleiro1.nome).click(function(){
 			
+<<<<<<< HEAD
+			var cumpreRequisitos = true;
+			var selecaoAnterior = Tabuleiro1.selecionado;
+			Tabuleiro1.selecionado = this;
+
+			// desseleciona se celula selecionada já estiver selecionada
+			if( 
+				$( Tabuleiro1.selecionado ).hasClass('celula_selecionada') 
+			){
+				desselecao( Tabuleiro1.selecionado );
+=======
 			if( $(this).data('tipo') != 'agua' ){
 				desselecao( this );
+>>>>>>> 78a3812c1e2548aaed55d10961cba978b65afe59
 				retiraEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
-				aplicaEstiloParaCelulasAtacaveis( this );
-
-				Tabuleiro1.selecionado = this;
-				$(Tabuleiro1.selecionado).removeClass('celula_desselecionada');// remove class
-				$(this).addClass('celula_selecionada'); // add class
+				Tabuleiro1.selecionado = {}; // retira o que está selecionado
+				cumpreRequisitos = false;
 			}
+
+			// celulas de agua
+			//		.nunca sao atacaveis
+			if( 
+				$( Tabuleiro1.selecionado ).attr('tipo') == 'agua' // pata celula de agua
+				&& cumpreRequisitos == true // continua cumprindo requisitos
+			){
+				cumpreRequisitos = false;
+			}
+
+			// celulas atacaveis
+			// 		.movimenta a peca que estiver na casa que estiver mostrando celulas atacaveis
+			if( 
+				$( Tabuleiro1.selecionado ).hasClass('atacavel') != false // é uma celula atacavel
+				&& $( selecaoAnterior ).has('.peca').length // tem 1 peca na selecao anterior
+				&& cumpreRequisitos == true // continua cumprindo requisitos
+			){ // para celula atacavel (movimentando peca)
+				$( Tabuleiro1.selecionado ).html( $( selecaoAnterior ).find('.peca') );
+			}
+
+			if( cumpreRequisitos ){
+				desselecao( selecaoAnterior );
+				retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+				aplicaEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
+
+				$( Tabuleiro1.selecionado ).removeClass('celula_desselecionada');// remove class
+				$( Tabuleiro1.selecionado ).addClass('celula_selecionada'); // add class
+			}
+			
 
 		});
 		// desseleção
 		function desselecao( celula ){
-			
-			$(Tabuleiro1.selecionado).removeClass('celula_selecionada');// remove class
-			$(Tabuleiro1.selecionado).addClass('celula_desselecionada');// remove class
+			$( celula ).removeClass('celula_selecionada');// remove class
+			$( celula ).addClass('celula_desselecionada');// remove class
 			// Tabuleiro1.selecionado = false;
-
 		}
 
 	// apica agua em algumas celulas
@@ -119,6 +165,7 @@ head.ready( function(){
 		// 		1.somente 1 celula adjacente de forma reta é atacavel (mexida da torre do xadrez mas somente 1 casa)
 		//		2.somente selecionavel celula de terra
 		// 		3.somente atacavel celula de terra
+		// 		4.somente selecionável célula vazia
 		function aplicaEstiloParaCelulasAtacaveis( celulaSelecionada ){
 
 			if( $(celulaSelecionada).data('tipo') != 'agua' ){
@@ -127,6 +174,36 @@ head.ready( function(){
 				var linha = parseInt($(celulaSelecionada).data('linha'));
 				
 				// celula acima
+<<<<<<< HEAD
+					if( 
+						(linha-1) > 0  // celula adjacente
+						&& $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+
+					){
+						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+					}
+				// celula abaixo
+					if( 
+						(linha+1) > 0  // celula adjacente 
+						&& $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra 
+						
+					){
+						$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+					}
+				// celula direita
+					if( 
+						(coluna+1) > 0   // celula adjacente
+						&& $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+						
+					){
+						$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
+					}
+				// celula esquerda
+					if( 
+						(coluna-1) > 0  // celula adjacente 
+						&& $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+					){
+=======
 					if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
 						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
@@ -140,6 +217,7 @@ head.ready( function(){
 					}
 				// celula esquerda
 					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+>>>>>>> 78a3812c1e2548aaed55d10961cba978b65afe59
 						$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
 			}
@@ -167,6 +245,28 @@ head.ready( function(){
 					}
 			}
 		}
+
+		//TODO: posicionar uma peça e mover com ela
+		Tabuleiro1.pecas = [];
+		pecaAtual = Peca1.clone();
+		$( pecaAtual ).attr('coordenadas','2,4');
+
+		function aplicaPecasTabuleiro(){
+			$.each( Tabuleiro1.pecas, function( index, value){
+
+				var coordenadasAtual = $(value).attr('coordenadas');
+				var tag = 'div[coordenadas="'+coordenadasAtual+'"]';
+				$( tag )
+					.html( value )
+					.attr('ocupada','1');
+
+			});
+		}
+
+		Tabuleiro1.pecas.push( pecaAtual );
+		aplicaPecasTabuleiro();
+
+
 
 });
 
