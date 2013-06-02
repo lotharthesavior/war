@@ -129,15 +129,41 @@ head.ready( function(){
 		// faz movimento de peça
 		function aplicaMovimento( novaCasa, casaDaPeca ){
 			var peca = $( casaDaPeca ).find('.peca');
-			if( parseInt(peca.attr('movimentos')) > 0 ){
+			var flagMovimento = 0;
+
+			if( 
+				parseInt(peca.attr('movimentos')) > 0 // impede quando movimentos restantes está zerado
+				&& $( novaCasa ).find('.peca').length < 1 // impede movimento para peca já ocupada por 1 peça
+			){
 				$( novaCasa ).html( peca );
 				subtraiUmMovimento( peca );
+				flagMovimento = 1; // para evitar ataque caso movimento aconteça tranquilo
+			}
+
+			// trata ataque
+			if( 
+				$( novaCasa ).find('.peca').length > 0 // casa ocupada por outra peça 
+				&& flagMovimento == 0 // evita ataque desnecesário
+			){
+				if(
+					verificaAtaque( novaCasa, casaDaPeca ) // verifica se peca que ocupa casa antes é inimigo
+				){
+
+				}
 			}
 		}
 		// conta 1 movimento de peca
 		function subtraiUmMovimento( peca ){
 			var novaContagem = parseInt(peca.attr('movimentos')) - 1;
 			peca.attr('movimentos', novaContagem );
+		}
+		// verifica se peca previamente colocada na casa é inimigo
+		function verificaAtaque( novaCasa, casaDaPeca ){
+			var playerNovaCasa = $( novaCasa ).find('.peca').attr('player');
+			var playerPecaAtual = $( casaDaPeca ).find('.peca').attr('player');
+			if( playerNovaCasa != playerPecaAtual ){ // ataque
+				subtraiUmMovimento( $( casaDaPeca ).find('.peca') ); // ataque consome 1 movimento
+			}
 		}
 
 	// apica agua em algumas celulas
