@@ -3,7 +3,7 @@ var Turno = {};
 var Controle = {};
 var Players = ['player1','player2'];
 var Tabuleiro1 = {};
-var Peca1 = $('<img src=\'img/soldado1.jpg\' class=\'peca imagem_peca\' />');
+var Peca1 = $('<img src=\'img/soldado1.jpg\' class=\'peca imagem_peca\' movimentos=\'2\' />');
 
 head.ready( function(){
 	
@@ -181,7 +181,10 @@ head.ready( function(){
 				var linha = parseInt($(celulaSelecionada).attr('linha'));
 
 				var peca = $( celulaSelecionada ).find('.peca');
-				if( parseInt(peca.attr('movimentos')) > 0 ){
+				if( 
+					parseInt(peca.attr('movimentos')) > 0 // verifica se peça tem movimentos
+					&& Turno.player == peca.attr('player') // verifica se está no turno do dono da peça
+				){
 				
 					// celula acima
 						if( 
@@ -261,8 +264,7 @@ head.ready( function(){
 			$.each( Tabuleiro1.pecas, function( index, value){
 
 				$(value).attr({
-					player: 'player1',
-					movimentos: 2
+					player: 'player1'
 				});
 				var coordenadasAtual = $(value).attr('coordenadas');
 				var tag = 'div[coordenadas="'+coordenadasAtual+'"]';
@@ -300,7 +302,17 @@ head.ready( function(){
 				}else{
 					Turno.player = Players[0];
 				}
+				renovaMovimentosPecasPlayer();
 				$('#turno').val(Turno.player);
+			}
+			function renovaMovimentosPecasPlayer(){
+				$.each( Tabuleiro1.pecas, function( index, value ){
+					if( value.attr('player') == Turno.player ){
+						value.attr({
+							movimentos: Peca1.attr('movimentos')
+						});
+					}
+				});
 			}
 
 
