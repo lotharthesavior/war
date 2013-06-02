@@ -79,8 +79,7 @@ head.ready( function(){
 
 			// desseleciona se celula selecionada já estiver selecionada
 			if( 
-				$( Tabuleiro1.selecionado ).attr('tipo') != 'agua' 
-				&& $( Tabuleiro1.selecionado ).hasClass('.celula_selecionada').length
+				$( Tabuleiro1.selecionado ).hasClass('celula_selecionada') 
 			){
 				desselecao( Tabuleiro1.selecionado );
 				retiraEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
@@ -89,12 +88,13 @@ head.ready( function(){
 			}
 
 			// celulas de agua
-			//		.nunca sao atacaveis
-			if( 
-				$( Tabuleiro1.selecionado ).attr('tipo') == 'agua' // pata celula de agua
-				&& cumpreRequisitos == true // continua cumprindo requisitos
+			if(
+				$( Tabuleiro1.selecionado ).attr('tipo') == 'agua'
 			){
-				cumpreRequisitos = false;
+				desselecao( selecaoAnterior );
+				retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+				Tabuleiro1.selecionado = {}; // retira o que está selecionado
+				cumpreRequisitos = false;	
 			}
 
 			// celulas atacaveis
