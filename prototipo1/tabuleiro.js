@@ -1,4 +1,7 @@
 
+var Turno = {};
+var Controle = {};
+var Players = ['player1','player2'];
 var Tabuleiro1 = {};
 var Peca1 = $('<img src=\'img/soldado1.jpg\' class=\'peca imagem_peca\' />');
 
@@ -71,6 +74,7 @@ head.ready( function(){
 
 
 	// eventos para as células
+	// RESPONSAVEL PELO MOVIMENTO DAS CELULAS
 		// seleção
 		$('.coluna_'+Tabuleiro1.nome).click(function(){
 			var cumpreRequisitos = true;
@@ -231,7 +235,7 @@ head.ready( function(){
 			}
 		}
 
-		//TODO: posicionar uma peça e mover com ela
+		// posiciona uma peça e mover com ela
 		Tabuleiro1.pecas = [];
 		pecaAtual = Peca1.clone();
 		$( pecaAtual ).attr('coordenadas','2,4');
@@ -251,6 +255,28 @@ head.ready( function(){
 		Tabuleiro1.pecas.push( pecaAtual );
 		aplicaPecasTabuleiro();
 
+
+		// APLICA CONTROLE
+			// console.log(Controle.html);
+			Controle.html = '<ul>'
+			Controle.html += '<li><a style=\'cursor:pointer\' onclick=\'javascript:Controle.passarTurno()\'>Passar Turno</a></li>';
+			Controle.html += '</ul>';
+			$('#controle').html( Controle.html );
+
+			if( Turno.player == undefined ){ // aplica primeiro turno
+				Turno.player = Players[0]; 
+			}
+
+			// opcoes do controle
+			Controle.passarTurno = function(){
+				if( 
+					Turno.player == Players[0] 
+				){
+					Turno.player = Players[1];
+				}else{
+					Turno.player = Players[0];
+				}
+			}
 
 
 });
