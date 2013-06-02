@@ -108,7 +108,7 @@ head.ready( function(){
 				&& $( selecaoAnterior ).has('.peca').length // tem 1 peca na selecao anterior
 				&& cumpreRequisitos == true // continua cumprindo requisitos
 			){ // para celula atacavel (movimentando peca)
-				$( Tabuleiro1.selecionado ).html( $( selecaoAnterior ).find('.peca') );
+				aplicaMovimento( Tabuleiro1.selecionado, selecaoAnterior );
 			}
 
 			if( cumpreRequisitos ){
@@ -125,6 +125,19 @@ head.ready( function(){
 			$( celula ).removeClass('celula_selecionada');// remove class
 			$( celula ).addClass('celula_desselecionada');// remove class
 			// Tabuleiro1.selecionado = false;
+		}
+		// faz movimento de peça
+		function aplicaMovimento( novaCasa, casaDaPeca ){
+			var peca = $( casaDaPeca ).find('.peca');
+			if( parseInt(peca.attr('movimentos')) > 0 ){
+				$( novaCasa ).html( peca );
+				subtraiUmMovimento( peca );
+			}
+		}
+		// conta 1 movimento de peca
+		function subtraiUmMovimento( peca ){
+			var novaContagem = parseInt(peca.attr('movimentos')) - 1;
+			peca.attr('movimentos', novaContagem );
 		}
 
 	// apica agua em algumas celulas
@@ -166,49 +179,53 @@ head.ready( function(){
 				// console.log($(celulaSelecionada).attr('tipo'));
 				var coluna = parseInt($(celulaSelecionada).attr('coluna'));
 				var linha = parseInt($(celulaSelecionada).attr('linha'));
-				
-				// celula acima
-					if( 
-						(linha-1) > 0  // celula adjacente
-						&& $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
 
-					){
-						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula abaixo
-					if( 
-						(linha+1) > 0  // celula adjacente 
-						&& $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra 
-					){
-						$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula direita
-					if( 
-						(coluna+1) > 0   // celula adjacente
-						&& $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
-						
-					){
-						$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula esquerda
-					if( 
-						(coluna-1) > 0  // celula adjacente 
-						&& $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
-					){
-						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula abaixo
-					if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
-						$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula direita
-					if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua'){
-						$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
-				// celula esquerda
-					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
-						$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
-					}
+				var peca = $( celulaSelecionada ).find('.peca');
+				if( parseInt(peca.attr('movimentos')) > 0 ){
+				
+					// celula acima
+						if( 
+							(linha-1) > 0  // celula adjacente
+							&& $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+
+						){
+							$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula abaixo
+						if( 
+							(linha+1) > 0  // celula adjacente 
+							&& $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra 
+						){
+							$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula direita
+						if( 
+							(coluna+1) > 0   // celula adjacente
+							&& $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+							
+						){
+							$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula esquerda
+						if( 
+							(coluna-1) > 0  // celula adjacente 
+							&& $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' // celula de terra
+						){
+							$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula abaixo
+						if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+							$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula direita
+						if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua'){
+							$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+					// celula esquerda
+						if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+							$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
+						}
+				}
 			}
 		}
 		function retiraEstiloParaCelulasAtacaveis( celulaSelecionada ){
@@ -235,7 +252,7 @@ head.ready( function(){
 			}
 		}
 
-		// posiciona uma peça e mover com ela
+		// POSICIONA PECA E MOVE COM ELA
 		Tabuleiro1.pecas = [];
 		pecaAtual = Peca1.clone();
 		$( pecaAtual ).attr('coordenadas','2,4');
@@ -243,11 +260,17 @@ head.ready( function(){
 		function aplicaPecasTabuleiro(){
 			$.each( Tabuleiro1.pecas, function( index, value){
 
+				$(value).attr({
+					player: 'player1',
+					movimentos: 2
+				});
 				var coordenadasAtual = $(value).attr('coordenadas');
 				var tag = 'div[coordenadas="'+coordenadasAtual+'"]';
 				$( tag )
 					.html( value )
-					.attr('ocupada','1');
+					.attr({
+						ocupada: '1'
+					});
 
 			});
 		}
@@ -265,6 +288,7 @@ head.ready( function(){
 
 			if( Turno.player == undefined ){ // aplica primeiro turno
 				Turno.player = Players[0]; 
+				$('#turno').val(Turno.player);
 			}
 
 			// opcoes do controle
@@ -276,6 +300,7 @@ head.ready( function(){
 				}else{
 					Turno.player = Players[0];
 				}
+				$('#turno').val(Turno.player);
 			}
 
 
