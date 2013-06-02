@@ -51,7 +51,7 @@ head.ready( function(){
 					id: 'coluna_'+i+'_linha_'+contador+'_'+Tabuleiro1.nome
 				});
 
-			$(coluna_atual).data({
+			$(coluna_atual).attr({
 				tipo: 'terra',
 				coluna: i,
 				linha: contador
@@ -73,50 +73,47 @@ head.ready( function(){
 	// eventos para as células
 		// seleção
 		$('.coluna_'+Tabuleiro1.nome).click(function(){
-			
 			var cumpreRequisitos = true;
 			var selecaoAnterior = Tabuleiro1.selecionado;
 			Tabuleiro1.selecionado = this;
 
 			// desseleciona se celula selecionada já estiver selecionada
 			if( 
-				$( Tabuleiro1.selecionado ).hasClass('celula_selecionada') 
+				$( Tabuleiro1.selecionado ).attr('tipo') != 'agua' 
+				&& $( Tabuleiro1.selecionado ).hasClass('.celula_selecionada').length
 			){
 				desselecao( Tabuleiro1.selecionado );
-				if( $(this).data('tipo') != 'agua' ){
-					desselecao( this );
-					retiraEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
-					Tabuleiro1.selecionado = {}; // retira o que está selecionado
-					cumpreRequisitos = false;
-				}
+				retiraEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
+				Tabuleiro1.selecionado = {}; // retira o que está selecionado
+				cumpreRequisitos = false;
+			}
 
-				// celulas de agua
-				//		.nunca sao atacaveis
-				if( 
-					$( Tabuleiro1.selecionado ).attr('tipo') == 'agua' // pata celula de agua
-					&& cumpreRequisitos == true // continua cumprindo requisitos
-				){
-					cumpreRequisitos = false;
-				}
+			// celulas de agua
+			//		.nunca sao atacaveis
+			if( 
+				$( Tabuleiro1.selecionado ).attr('tipo') == 'agua' // pata celula de agua
+				&& cumpreRequisitos == true // continua cumprindo requisitos
+			){
+				cumpreRequisitos = false;
+			}
 
-				// celulas atacaveis
-				// 		.movimenta a peca que estiver na casa que estiver mostrando celulas atacaveis
-				if( 
-					$( Tabuleiro1.selecionado ).hasClass('atacavel') != false // é uma celula atacavel
-					&& $( selecaoAnterior ).has('.peca').length // tem 1 peca na selecao anterior
-					&& cumpreRequisitos == true // continua cumprindo requisitos
-				){ // para celula atacavel (movimentando peca)
-					$( Tabuleiro1.selecionado ).html( $( selecaoAnterior ).find('.peca') );
-				}
+			// celulas atacaveis
+			// 		.movimenta a peca que estiver na casa que estiver mostrando celulas atacaveis
+			if( 
+				$( Tabuleiro1.selecionado ).hasClass('atacavel') != false // é uma celula atacavel
+				&& $( selecaoAnterior ).has('.peca').length // tem 1 peca na selecao anterior
+				&& cumpreRequisitos == true // continua cumprindo requisitos
+			){ // para celula atacavel (movimentando peca)
+				$( Tabuleiro1.selecionado ).html( $( selecaoAnterior ).find('.peca') );
+			}
 
-				if( cumpreRequisitos ){
-					desselecao( selecaoAnterior );
-					retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
-					aplicaEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
+			if( cumpreRequisitos ){
+				desselecao( selecaoAnterior );
+				retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+				aplicaEstiloParaCelulasAtacaveis( Tabuleiro1.selecionado );
 
-					$( Tabuleiro1.selecionado ).removeClass('celula_desselecionada');// remove class
-					$( Tabuleiro1.selecionado ).addClass('celula_selecionada'); // add class
-				}
+				$( Tabuleiro1.selecionado ).removeClass('celula_desselecionada');// remove class
+				$( Tabuleiro1.selecionado ).addClass('celula_selecionada'); // add class
 			}
 		});
 		// desseleção
@@ -149,7 +146,7 @@ head.ready( function(){
 		$.each( Tabuleiro1.agua, function( index, value ){
 			$('#coluna_'+value[1]+'_linha_'+value[0]+'_'+Tabuleiro1.nome)
 				.css('background','blue')
-				.data('tipo','agua');
+				.attr('tipo','agua');
 		});
 
 
@@ -161,10 +158,10 @@ head.ready( function(){
 		// 		4.somente selecionável célula vazia
 		function aplicaEstiloParaCelulasAtacaveis( celulaSelecionada ){
 
-			if( $(celulaSelecionada).data('tipo') != 'agua' ){
-				// console.log($(celulaSelecionada).data('tipo'));
-				var coluna = parseInt($(celulaSelecionada).data('coluna'));
-				var linha = parseInt($(celulaSelecionada).data('linha'));
+			if( $(celulaSelecionada).attr('tipo') != 'agua' ){
+				// console.log($(celulaSelecionada).attr('tipo'));
+				var coluna = parseInt($(celulaSelecionada).attr('coluna'));
+				var linha = parseInt($(celulaSelecionada).attr('linha'));
 				
 				// celula acima
 					if( 
@@ -197,38 +194,38 @@ head.ready( function(){
 						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
 				// celula abaixo
-					if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
 				// celula direita
-					if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).data('tipo') != 'agua'){
+					if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua'){
 						$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
 				// celula esquerda
-					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).addClass('atacavel');
 					}
 			}
 		}
 		function retiraEstiloParaCelulasAtacaveis( celulaSelecionada ){
 			if( celulaSelecionada != false ){
-				var coluna = parseInt($(celulaSelecionada).data('coluna'));
-				var linha = parseInt($(celulaSelecionada).data('linha'));
+				var coluna = parseInt($(celulaSelecionada).attr('coluna'));
+				var linha = parseInt($(celulaSelecionada).attr('linha'));
 				
 				// celula acima
-					if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).removeClass('atacavel');
 					}
 				// celula abaixo
-					if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).removeClass('atacavel');
 					}
 				// celula direita
-					if( (coluna+1) > 0 && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (coluna+1) > 0 && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).removeClass('atacavel');
 					}
 				// celula esquerda
-					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).data('tipo') != 'agua' ){
+					if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
 						$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).removeClass('atacavel');
 					}
 			}

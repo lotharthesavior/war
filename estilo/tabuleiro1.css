@@ -39,3 +39,8 @@
 .atacavel{
 	border:1px solid yellow;
 }
+
+.peca{
+	width:68px;
+	height:48px;
+}
