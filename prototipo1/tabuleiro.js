@@ -255,17 +255,12 @@ head.ready( function(){
 			}
 		}
 
-		// POSICIONA PECA E MOVE COM ELA
+		// POSICIONA PECAS E PERMITE MOVIMENTO COM ELA
 		Tabuleiro1.pecas = [];
-		pecaAtual = Peca1.clone();
-		$( pecaAtual ).attr('coordenadas','2,4');
-
+		
 		function aplicaPecasTabuleiro(){
 			$.each( Tabuleiro1.pecas, function( index, value){
 
-				$(value).attr({
-					player: 'player1'
-				});
 				var coordenadasAtual = $(value).attr('coordenadas');
 				var tag = 'div[coordenadas="'+coordenadasAtual+'"]';
 				$( tag )
@@ -277,7 +272,20 @@ head.ready( function(){
 			});
 		}
 
-		Tabuleiro1.pecas.push( pecaAtual );
+		// peca para player 1
+			pecaAtual1 = Peca1.clone();
+			$( pecaAtual1 ).attr({
+				coordenadas: '2,4',
+				player: 'player1'
+			});
+			Tabuleiro1.pecas.push( pecaAtual1 );
+		// peca para player 2
+			pecaAtual2 = Peca1.clone();
+			$( pecaAtual2 ).attr({
+				coordenadas: '3,6',
+				player: 'player2'
+			});
+			Tabuleiro1.pecas.push( pecaAtual2 );
 		aplicaPecasTabuleiro();
 
 
