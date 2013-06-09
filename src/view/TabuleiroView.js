@@ -8,9 +8,61 @@ app.TabuleiroView = Backbone.View.extend({
 
 	NOME : 'tabuleiro1',	
 
+
 	initialize: function() {
-		this.$linha 	= $('<div class="linha"></div>');
-		this.$coluna 	= $('<div class="coluna celula_desselecionada"></div>');
+		this.$linha 			= $('<div class="linha"></div>');
+		this.$coluna 			= $('<div class="coluna celula_desselecionada"></div>');
+		this.$celulaSelecionada = false;
+	},
+
+	events : {
+		'click div.coluna' : 'selecionaCelula'
+	},
+
+	selecionaCelula : function( event ) {
+		var cumpreRequisitos 	= true,
+			selecaoAnterior 	= this.$celulaSelecionada;
+
+		this.$celulaSelecionada = $( event.target );
+		
+
+		console.log(this.$celulaSelecionada);
+		
+		if( this.$celulaSelecionada.attr('tipo') == 'agua' ){
+			this.desselecao( selecaoAnterior );
+			//retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+			this.$celulaSelecionada = false; 
+			cumpreRequisitos 		= false;	
+		}
+
+		if( this.$celulaSelecionada.hasClass('atacavel') != false 
+			&& $( selecaoAnterior ).has('.peca').length 
+			&& cumpreRequisitos == true ) { 
+			//aplicaMovimento( this.$celulaSelecionada, selecaoAnterior );
+		}
+		
+		if( this.$celulaSelecionada.is( selecaoAnterior )  ){			
+			this.desselecao( this.$celulaSelecionada );
+			//retiraEstiloParaCelulasAtacaveis( this.$celulaSelecionada );
+			this.$celulaSelecionada = false; 
+			cumpreRequisitos 		= false;
+		}
+
+		if( cumpreRequisitos ){
+			this.desselecao( selecaoAnterior );
+			//retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+			//aplicaEstiloParaCelulasAtacaveis( this.$celulaSelecionada );		
+
+			this.$celulaSelecionada.removeClass('celula_desselecionada');
+			this.$celulaSelecionada.addClass('celula_selecionada'); 
+		}
+	},
+
+	desselecao : function( $celula ) {
+		if($celula) {
+			$celula.removeClass('celula_selecionada');
+			$celula.addClass('celula_desselecionada');			
+		}
 	},
 
 	montaGride : function(){
