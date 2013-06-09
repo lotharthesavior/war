@@ -9,8 +9,8 @@ app.TabuleiroView = Backbone.View.extend({
 	NOME : 'tabuleiro1',	
 
 	initialize: function() {
-		this.$linha 	= $('<div class="linha_'+ this.NOME +'"></div>');
-		this.$coluna 	= $('<div class="coluna_'+ this.NOME +' celula_desselecionada"></div>');
+		this.$linha 	= $('<div class="linha"></div>');
+		this.$coluna 	= $('<div class="coluna celula_desselecionada"></div>');
 	},
 
 	montaGride : function(){
@@ -28,7 +28,7 @@ app.TabuleiroView = Backbone.View.extend({
 		for( var ctLinha = 1; ctLinha <= this.TOTAL_LINHAS; ctLinha++ ) {
 
 			linhaAtual = this.$linha.clone();
-			idLinha 	= 'linha_' + ctLinha +'_'+ this.NOME
+			idLinha    = 'linha_' + ctLinha
 
 			$(linhaAtual).attr('id', idLinha);
 
