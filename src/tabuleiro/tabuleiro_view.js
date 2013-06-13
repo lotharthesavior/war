@@ -32,13 +32,13 @@ TabuleiroView.prototype.aplicaEventoSocket = function()
 */
 TabuleiroView.prototype.render = function(container) {
 	
-	
 	var grade = this.criarGrade();
 
 	this.adicionaTerritoriosNaGrade(grade);
 
 	$(container).html( grade );	
 	this.aplicaEventos();
+
 };
 
 TabuleiroView.prototype.adicionaTerritoriosNaGrade = function(grade) {
@@ -64,23 +64,27 @@ TabuleiroView.prototype.criarGrade = function() {
 	var nomeTabuleiro 		= this.tabuleiro.getNome(),
 		linhasTabuleiro 	= this.tabuleiro.getTamanho().linha,
 		colunasTabuleiro 	= this.tabuleiro.getTamanho().coluna,
-		grade 				= $('<div />'),
+		grade 			= $('<div />'),
 
 		// utilitarios
-		contador 	 = 1,
-		coluna_atual = '',
-		linha_atual	 = '',
+		contador 	= 1,
+		coluna_atual 	= '',
+		linha_atual	= '',
 
 		// linhasTabuleiro
-		linha = $('<div class="linha" />'),
-
+		linha = $('<div />'),
+	
 		// colunasTabuleiro
-		coluna = $('<div class="coluna celula_desselecionada" />');
+		coluna = $('<div />');
 
 	// montagem
 	for( var i = 1; i <= linhasTabuleiro; i++ ){  // aplica linhasTabuleiro
 		linha_atual = linha.clone();
 		linha_atual.attr('id','linha_'+i+'_'+nomeTabuleiro);
+		linha_atual.addClass('linha');
+		linha_atual.data({
+			id_linha: i
+		});
 		grade.append( linha_atual );
 	};
 
@@ -89,12 +93,14 @@ TabuleiroView.prototype.criarGrade = function() {
 
 		for( i = 1; i <= colunasTabuleiro; i++ ){
 			coluna_atual = coluna.clone();
+			coluna_atual.addClass('coluna celula_desselecionada');
 			coluna_atual.attr('id', contador +'_'+ i );
 			coluna_atual.data({
 				tipo: 'agua',
 				coluna: i,
-				linha: contador
-
+				linha: contador,
+				id_celula: String(index+1)+','+String(i),
+				id_coluna: i
 			});
 			$(value).append( coluna_atual );
 		}
