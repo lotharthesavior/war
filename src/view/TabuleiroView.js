@@ -25,9 +25,6 @@ app.TabuleiroView = Backbone.View.extend({
 
 		this.$celulaSelecionada = $( event.target );
 		
-
-		console.log(this.$celulaSelecionada);
-		
 		if( this.$celulaSelecionada.attr('tipo') == 'agua' ){
 			this.desselecao( selecaoAnterior );
 			//retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
