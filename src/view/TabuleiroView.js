@@ -1,14 +1,7 @@
 var app = app || {};
 
 app.TabuleiroView = Backbone.View.extend({
-
-	TOTAL_LINHAS : 10,
-
-	TOTAL_COLUNAS : 10,
-
-	NOME : 'tabuleiro1',	
-
-
+	
 	initialize: function() {
 		this.$linha 			= $('<div class="linha"></div>');
 		this.$coluna 			= $('<div class="coluna celula_desselecionada"></div>');
@@ -74,7 +67,7 @@ app.TabuleiroView = Backbone.View.extend({
 		var idLinha 	= '',
 			linhaAtual 	= '', 
 			gride 		= [];
-		for( var ctLinha = 1; ctLinha <= this.TOTAL_LINHAS; ctLinha++ ) {
+		for( var ctLinha = 1; ctLinha <= this.model.get('linha'); ctLinha++ ) {
 
 			linhaAtual = this.$linha.clone();
 			idLinha    = 'linha_' + ctLinha
@@ -96,10 +89,10 @@ app.TabuleiroView = Backbone.View.extend({
 
 		$.each( gride, function( index, linha ){
 
-			for( ctColuna = 1; ctColuna <= that.TOTAL_COLUNAS; ctColuna++ ) {
+			for( ctColuna = 1; ctColuna <= that.model.get('coluna'); ctColuna++ ) {
 
 				colunaAtual = that.$coluna.clone();
-				idColuna	= 'coluna_'+ ctColuna +'_linha_'+ contadorLinha +'_'+ that.NOME;
+				idColuna	= 'coluna_'+ ctColuna +'_linha_'+ contadorLinha +'_'+ that.model.get('nome');
 
 				$(colunaAtual).attr({ id: idColuna })
 								.data({
