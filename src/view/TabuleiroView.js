@@ -4,6 +4,10 @@ app.TabuleiroView = Backbone.View.extend({
 
 	pecas : [],
 
+	players : ['player1','player2'],
+
+	turno : {},
+
 	initialize: function() {
 		this.$linha 			= $('<div class="linha"></div>');
 		this.$coluna 			= $('<div class="coluna celula_desselecionada"></div>');
@@ -14,7 +18,7 @@ app.TabuleiroView = Backbone.View.extend({
 		$( pecaAtual1 ).attr({
 			coordenadas: '2,4',
 			player: 'player1'
-		});
+		}).data({tipo : 'player'});
 		this.pecas.push( pecaAtual1 );
 
 		
@@ -22,11 +26,16 @@ app.TabuleiroView = Backbone.View.extend({
 		$( pecaAtual2 ).attr({
 			coordenadas: '3,6',
 			player: 'player2'
-		});
+		}).data({tipo : 'player'});
 
 		this.pecas.push( pecaAtual2 );
 
-		this.aplicaPecasTabuleiro();
+		// aplica primeiro turno
+		if( this.turno.player == undefined ) 
+		{ 
+			this.turno.player = this.players[0]; 
+			$('#turno').val(this.turno.player);
+		}
 	},
 
 	events : {
@@ -35,13 +44,13 @@ app.TabuleiroView = Backbone.View.extend({
 
 	selecionaCelula : function( event ) {
 		var cumpreRequisitos 	= true,
-			selecaoAnterior 	= this.$celulaSelecionada;
+			selecaoAnterior 	= this.$celulaSelecionada;			
 
-		this.$celulaSelecionada = $( event.target );
+		this.$celulaSelecionada = $( event.currentTarget );
 		
 		if( this.$celulaSelecionada.attr('tipo') == 'agua' ){
 			this.desselecao( selecaoAnterior );
-			//retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+			this.retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
 			this.$celulaSelecionada = false; 
 			cumpreRequisitos 		= false;	
 		}
@@ -54,14 +63,14 @@ app.TabuleiroView = Backbone.View.extend({
 		
 		if( this.$celulaSelecionada.is( selecaoAnterior )  ){			
 			this.desselecao( this.$celulaSelecionada );
-			//retiraEstiloParaCelulasAtacaveis( this.$celulaSelecionada );
+			this.retiraEstiloParaCelulasAtacaveis( this.$celulaSelecionada );
 			this.$celulaSelecionada = false; 
 			cumpreRequisitos 		= false;
 		}
 
 		if( cumpreRequisitos ){
 			this.desselecao( selecaoAnterior );
-			//retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
+			this.retiraEstiloParaCelulasAtacaveis( selecaoAnterior );
 			this.aplicaEstiloParaCelulasAtacaveis( this.$celulaSelecionada );		
 
 			this.$celulaSelecionada.removeClass('celula_desselecionada');
@@ -69,20 +78,44 @@ app.TabuleiroView = Backbone.View.extend({
 		}
 	},
 
-	aplicaPecasTabuleiro : function (){
+	retiraEstiloParaCelulasAtacaveis : function( celulaSelecionada ){
 
+		if( celulaSelecionada != false ){
+
+			var coluna 	= parseInt( celulaSelecionada.data('coluna'), 10 ),
+				linha 	= parseInt( celulaSelecionada.data('linha'), 10 );
+				
+			// celula acima
+			if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+				$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+Tabuleiro1.nome).removeClass('atacavel');
+			}
+			// celula abaixo
+			if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+				$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+Tabuleiro1.nome).removeClass('atacavel');
+			}
+			// celula direita
+			if( (coluna+1) > 0 && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+				$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+Tabuleiro1.nome).removeClass('atacavel');
+			}
+			// celula esquerda
+			if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).attr('tipo') != 'agua' ){
+				$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+Tabuleiro1.nome).removeClass('atacavel');
+			}
+		}
+	},
+
+	aplicaPecasTabuleiro : function (){
 		var coordenadasAtual,
-			tag;
+			tag,
+			that = this;
 
 		$.each( this.pecas, function( index, value){
 
 			coordenadasAtual = $(value).attr('coordenadas');
 			tag = 'div[coordenadas="'+coordenadasAtual+'"]';
-
-			$( tag ).html( value )
-					.attr({
-						ocupada: '1'
-					});
+			
+			that.$( tag ).html( value )
+					.attr({ ocupada: '1' });
 		});
 	},
 
@@ -139,36 +172,33 @@ app.TabuleiroView = Backbone.View.extend({
 	// 		4.somente selecionável célula vazia
 	aplicaEstiloParaCelulasAtacaveis : function ( celulaSelecionada ){
 
-		if( $(celulaSelecionada).attr('tipo') != 'agua' ){
+		if( celulaSelecionada.data('tipo') != 'agua' ){
 			
-			var coluna = parseInt($(celulaSelecionada).attr('coluna')),
-				linha = parseInt($(celulaSelecionada).attr('linha')),
-				peca = $( celulaSelecionada ).find('.peca'),
-				tabuleiroNome = this.model.get('nome');
+			var coluna 			= parseInt( celulaSelecionada.data('coluna'), 10),
+				linha 			= parseInt( celulaSelecionada.data('linha'), 10),
+				peca 			= celulaSelecionada.find('.peca'),
+				tabuleiroNome 	= this.model.get('nome');
 
+			// verifica se peça tem movimentos e se está no turno do dono da peça
+			if( parseInt( peca.attr('movimentos'), 10 ) > 0 && this.turno.player == peca.attr('player')  ){
 
-			if( parseInt(peca.attr('movimentos'), 10 ) > 0 // verifica se peça tem movimentos
-				&& Turno.player == peca.attr('player') // verifica se está no turno do dono da peça
-			){
-
-			
 				// celula acima
 				if( (linha-1) > 0  // celula adjacente
-					&& $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).attr('tipo') != 'agua' // celula de terra
+					&& $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).data('tipo') != 'agua' // celula de terra
 
 				){
 					$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).addClass('atacavel');
 				}
 				// celula abaixo
 				if( (linha+1) > 0  // celula adjacente 
-					&& $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).attr('tipo') != 'agua' // celula de terra 
+					&& $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).data('tipo') != 'agua' // celula de terra 
 				){
 					$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).addClass('atacavel');
 				}
 				// celula direita
 				if( 
 					(coluna+1) > 0   // celula adjacente
-					&& $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua' // celula de terra
+					&& $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua' // celula de terra
 					
 				){
 					$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).addClass('atacavel');
@@ -176,20 +206,20 @@ app.TabuleiroView = Backbone.View.extend({
 				// celula esquerda
 				if( 
 					(coluna-1) > 0  // celula adjacente 
-					&& $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua' // celula de terra
+					&& $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua' // celula de terra
 				){
 					$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).addClass('atacavel');
 				}
 				// celula abaixo
-				if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+				if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 					$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).addClass('atacavel');
 				}
 				// celula direita
-				if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua'){
+				if( (coluna+1) > 0  && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua'){
 					$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).addClass('atacavel');
 				}
 				// celula esquerda
-				if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+				if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 					$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).addClass('atacavel');
 				}
 			}
@@ -199,24 +229,24 @@ app.TabuleiroView = Backbone.View.extend({
 	retiraEstiloParaCelulasAtacaveis : function ( celulaSelecionada ){
 		if( celulaSelecionada != false ){
 
-			var coluna = parseInt($(celulaSelecionada).attr('coluna')),
-				linha = parseInt($(celulaSelecionada).attr('linha')),
+			var coluna 	= parseInt( celulaSelecionada.data('coluna'), 10 ),
+				linha 	= parseInt( celulaSelecionada.data('linha'), 10 ),
 				tabuleiroNome = this.model.get('nome');
 			
 			// celula acima
-			if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+			if( (linha-1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 				$('#coluna_'+coluna+'_linha_'+(linha-1)+'_'+tabuleiroNome).removeClass('atacavel');
 			}
 			// celula abaixo
-			if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+			if( (linha+1) > 0 && $('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 				$('#coluna_'+coluna+'_linha_'+(linha+1)+'_'+tabuleiroNome).removeClass('atacavel');
 			}
 			// celula direita
-			if( (coluna+1) > 0 && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+			if( (coluna+1) > 0 && $('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 				$('#coluna_'+(coluna+1)+'_linha_'+linha+'_'+tabuleiroNome).removeClass('atacavel');
 			}
 			// celula esquerda
-			if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).attr('tipo') != 'agua' ){
+			if( (coluna-1) > 0 && $('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).data('tipo') != 'agua' ){
 				$('#coluna_'+(coluna-1)+'_linha_'+linha+'_'+tabuleiroNome).removeClass('atacavel');
 			}
 		}
@@ -250,7 +280,7 @@ app.TabuleiroView = Backbone.View.extend({
 	montaColunas : function( gride ){
 
 		var colunaAtual 	= '',
-			contadorLinha 	= 1,
+			ctLinha 		= 1,
 			idColuna 		= '',
 			that 			= this;
 
@@ -259,20 +289,20 @@ app.TabuleiroView = Backbone.View.extend({
 			for( ctColuna = 1; ctColuna <= that.model.get('coluna'); ctColuna++ ) {
 
 				colunaAtual = that.$coluna.clone();
-				idColuna	= 'coluna_'+ ctColuna +'_linha_'+ contadorLinha +'_'+ that.model.get('nome');
+				idColuna	= 'coluna_'+ ctColuna +'_linha_'+ ctLinha +'_'+ that.model.get('nome');
 
-				$(colunaAtual).attr({ id: idColuna })
+				$(colunaAtual).attr({ id: idColuna, coordenadas: ctLinha +','+ ctColuna })
 								.data({
 									tipo: 'terra',
 									coluna: ctColuna,
-									linha: contadorLinha,
+									linha: ctLinha,
 								});				
 
 				linha.append( colunaAtual );
 
 			}
 
-			contadorLinha++;
+			ctLinha++;
 
 		});
 
@@ -282,6 +312,29 @@ app.TabuleiroView = Backbone.View.extend({
 	render : function() {
 		var gride = this.montaGride();
 		this.$el.append(gride);
+		this.aplicaPecasTabuleiro();
 		return this;
+	},	
+
+	// opcoes do controle
+	passarTurno : function(){
+		
+		if( this.turno.player == this.players[0] ){
+			this.turno.player = this.players[1];
+		}else{
+			this.turno.player = this.players[0];
+		}
+
+		this.renovaMovimentosPecasPlayer();
+		$('#turno').val(this.turno.player);
+	},
+
+	renovaMovimentosPecasPlayer : function (){
+		var that = this.
+		$.each( this.pecas, function( index, value ){
+			if( value.attr('player') == this.turno.player ){
+				value.attr({ movimentos: that.$peca.attr('movimentos') });
+			}
+		});
 	}
 });
