@@ -195,10 +195,10 @@ head.ready( function(){
 
 	// colore amarelo os tabuleiros atacáveis
 		// regra desse tabuleiro: 
-		// 		1.somente 1 celula adjacente de forma reta é atacavel (mexida da torre do xadrez mas somente 1 casa)
+		//		1.somente 1 celula adjacente de forma reta é atacavel (mexida da torre do xadrez mas somente 1 casa)
 		//		2.somente selecionavel celula de terra
-		// 		3.somente atacavel celula de terra
-		// 		4.somente selecionável célula vazia
+		//		3.somente atacavel celula de terra
+		//		4.somente selecionável célula vazia
 		function aplicaEstiloParaCelulasAtacaveis( celulaSelecionada ){
 
 			if( $(celulaSelecionada).attr('tipo') != 'agua' ){
